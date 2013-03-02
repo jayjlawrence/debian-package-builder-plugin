@@ -100,7 +100,13 @@ public class DebianPackageBuilder extends Builder {
 			}
 
 			runner.runCommand("cd ''{0}'' && sudo /usr/lib/pbuilder/pbuilder-satisfydepends --control control", remoteDebian);
-			runner.runCommand("cd ''{0}'' && debuild --check-dirname-level 0 --no-tgz-check -k{1} -p''gpg --no-tty --passphrase {2}''", remoteDebian, getDescriptor().getAccountName(), getDescriptor().getPassphrase());
+
+			if (getDescriptor().getPassphrase().equals("")) {
+				runner.runCommand("cd ''{0}'' && debuild --check-dirname-level 0 --no-tgz-check -k{1} -p''gpg --no-tty''", remoteDebian, getDescriptor().getAccountName());
+
+			} else {
+				runner.runCommand("cd ''{0}'' && debuild --check-dirname-level 0 --no-tgz-check -k{1} -p''gpg --no-tty --passphrase {2}''", remoteDebian, getDescriptor().getAccountName(), getDescriptor().getPassphrase());
+			}
 
 			archiveArtifacts(build, runner, latestVersion);
 
